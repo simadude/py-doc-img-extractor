@@ -181,7 +181,7 @@ def _djvu_page_task(page_num, filepath, output_folder):
 	final_tiff = os.path.join(output_folder, f"page_{page_num}")
 
 	# ddjvu command to render page directly to tiff
-	cmd = ['ddjvu', f'-page={page_num}', filepath, final_tiff]
+	cmd = ['ddjvu', f'-page={page_num}', '-format=tiff', filepath, final_tiff]
 
 	try:
 		subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
