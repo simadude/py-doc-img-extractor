@@ -27,8 +27,8 @@ Fl_Button* b_input_files = nullptr;
 Fl_Box* b_input_files_count = nullptr;
 Fl_Button* b_output_dir = nullptr;
 Fl_Box* b_output_dir_label = nullptr;
-Fl_Progress* progress_bar = nullptr; // New: Progress bar
-Fl_Button* startb = nullptr; // New: Start button
+Fl_Progress* progress_bar = nullptr;
+Fl_Button* startb = nullptr;
 
 std::string input_files_count_str;
 std::vector<std::string> input_files_vec; 
@@ -242,7 +242,7 @@ void extract_djvu_images(const std::string& filepath, const std::string& output_
     std::cout << "   -> Rendering " << pages << " pages sequentially..." << std::endl;
     for (int page = 1; page <= pages; ++page) {
         char out_tiff[256];
-        snprintf(out_tiff, sizeof(out_tiff), "%s/page_%04d.tif", output_folder.c_str(), page);
+        snprintf(out_tiff, sizeof(out_tiff), "%s/page_%04d.tiff", output_folder.c_str(), page);
         std::string cmd = "ddjvu -format=tiff -page=" + std::to_string(page) + " '" + filepath + "' '" + out_tiff + "' > /dev/null 2>&1";
         system(cmd.c_str());
         if (page % 10 == 0 || page == pages) {
@@ -322,12 +322,12 @@ static void start_cb (Fl_Widget* o) {
     }
     b_input_files->deactivate();
     b_output_dir->deactivate();
-    startb->deactivate(); // New: Deactivate start button
-    progress_bar->show(); // New: Show progress bar
-    progress_bar->value(0); // New: Reset progress bar
+    startb->deactivate();
+    progress_bar->show();
+    progress_bar->value(0);
 
-    float progress_step = 100.0f / input_files_vec.size(); // New: Calculate progress step
-    int files_processed = 0; // New: Counter for processed files
+    float progress_step = 100.0f / input_files_vec.size();
+    int files_processed = 0;
 
     // Step 2 + 3: check if we support the file in the vector and process it.
     for (const auto& path : input_files_vec) {
@@ -342,14 +342,14 @@ static void start_cb (Fl_Widget* o) {
             continue;
         }
         process_document(path, output_dir_str);
-        files_processed++; // New: Increment processed files
-        progress_bar->value(files_processed * progress_step); // New: Update progress bar
-        Fl::check(); // New: Process FLTK events to update GUI
+        files_processed++;
+        progress_bar->value(files_processed * progress_step);
+        Fl::check();
     }
     b_input_files->activate();
     b_output_dir->activate();
-    startb->activate(); // New: Activate start button
-    progress_bar->hide(); // New: Hide progress bar
+    startb->activate();
+    progress_bar->hide();
 }
 
 
@@ -389,7 +389,7 @@ int main(int argc, char **argv) {
         startb = new Fl_Button(512-74, 10, 64, 32, "Start");
         startb->callback(start_cb);
 
-        progress_bar = new Fl_Progress(10, 220, 492, 24); // New: Progress bar
+        progress_bar = new Fl_Progress(10, 200, 492, 24);
         progress_bar->minimum(0);
         progress_bar->maximum(100);
         progress_bar->value(0);
