@@ -8,8 +8,6 @@
 #include <FL/Fl_Box.H>
 #include <cstdlib>
 #include <vector>
-#include <sys/stat.h>
-#include <fstream>
 
 bool support_DJVU = true;
 bool support_PDF = true;
