@@ -22,7 +22,12 @@ Fl_Button* ba = nullptr;
 Fl_Double_Window* wmain = nullptr;
 Fl_Double_Window* wfile_browser = nullptr;
 Fl_Button* b_input_files = nullptr;
-Fl_Button* b_output_directory = nullptr;
+Fl_Box* b_input_files_count = nullptr;
+Fl_Button* b_output_dir = nullptr;
+Fl_Box* b_output_dir_label = nullptr;
+
+std::string input_files_count_str;
+std::string output_dir_str;
 
 int call(std::string c) {
     std::string buffer;
@@ -98,11 +103,12 @@ void check_deps(void* user_data) {
         std::string msg = std::string("Dependencies: ") + std::to_string(dep_count) + "/" + std::to_string(total_deps) + "\n";
         l->insert(msg.c_str());
     }
-    if (dep_count < total_deps) {
+    
+    if (dep_count == 0) {
+        l->insert("No dependencies found. Please install dependencies and restart in order to continue.");
+    } else if (dep_count < total_deps) {
         l->insert("Some dependencies were not found. Would you like to still continue?");
         bc->show();
-    } else if (dep_count == 0) {
-        l->insert("No dependencies found. Please install dependencies and restart in order to continue.");
     } else {
         l->insert("All dependencies found!");
         wstart->hide();
@@ -111,7 +117,7 @@ void check_deps(void* user_data) {
     }
 }
 
-static void ba_cb(Fl_Widget* o) {
+static void quit_cb(Fl_Widget* o) {
     exit(0);
 }
 
@@ -119,6 +125,35 @@ static void bc_cb(Fl_Widget* o) {
     wstart->hide();
     wmain->show();
 }
+
+static void input_docs_cb(Fl_Widget* o) {
+    Fl_Native_File_Chooser infc;
+    infc.title("Choose documents to extract images from");
+    infc.type(Fl_Native_File_Chooser::BROWSE_MULTI_FILE);
+    infc.directory(".");
+    if (infc.show() == 0) { // 0 means file chosen (not error or cancel)
+        input_files_count_str = std::to_string(infc.count()) + std::string(" file(s)");
+        b_input_files_count->label(input_files_count_str.c_str());
+        b_input_files_count->align(FL_ALIGN_LEFT | FL_ALIGN_INSIDE);
+    } else {
+        // std::cout << "Cancelled or Error." << std::endl;
+    }
+}
+
+static void output_dir_cb(Fl_Widget* o) {
+    Fl_Native_File_Chooser onfc;
+    onfc.title("Choose directory to save images to");
+    onfc.type(Fl_Native_File_Chooser::BROWSE_DIRECTORY);
+    onfc.directory(".");
+    if (onfc.show() == 0) { // 0 means file chosen (not error or cancel)
+        output_dir_str = std::string(onfc.filename());
+        b_output_dir_label->label(output_dir_str.c_str());
+        b_output_dir_label->align(FL_ALIGN_LEFT | FL_ALIGN_INSIDE);
+    } else {
+        // std::cout << "Cancelled or Error." << std::endl;
+    }
+}
+
 
 int main(int argc, char **argv) {
     
@@ -133,18 +168,25 @@ int main(int argc, char **argv) {
         
         bc = new Fl_Button(80, 196+10, 74, 32, "Continue");
         bc->hide();
-        bc->callback((Fl_Callback0*)bc_cb);
+        bc->callback(bc_cb);
         ba = new Fl_Button(5, 196+10, 64, 32, "Abort");
-        ba->callback((Fl_Callback0*)ba_cb);
+        ba->callback(quit_cb);
     }
     wstart->end();
 
-    wmain = new Fl_Double_Window(512, 512);
+    wmain = new Fl_Double_Window(512, 256);
     {
-        new Fl_Box(30, 20, 200, 10, "Choose files to extract images from.");
-        b_input_files = new Fl_Button(10, 40, 128, 32, "Choose.");
+        new Fl_Box(50, 20, 200, 10, "Choose documents to extract images from.");
+        b_input_files = new Fl_Button(10, 40, 128, 32, "Choose");
+        b_input_files->callback(input_docs_cb);
+        b_input_files_count = new Fl_Box(148, 48, 96, 24);
         new Fl_Box(30, 88, 120, 10, "Choose output directory.");
-        b_output_directory = new Fl_Button(10, 108, 128, 32, "Choose.");
+        b_output_dir = new Fl_Button(10, 108, 128, 32, "Choose");
+        b_output_dir->callback(output_dir_cb);
+        b_output_dir_label = new Fl_Box(148, 112, 356, 24);
+
+        Fl_Button* quitb = new Fl_Button(512-74, 10, 64, 32, "Exit");
+        quitb->callback(quit_cb);
     }
     wmain->end();
 
