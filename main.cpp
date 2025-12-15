@@ -220,7 +220,7 @@ std::string detect_file_type(const std::string& filepath) {
         mime == "application/zip") {
         return "zip_container";
     }
-    
+
     if (mime == "application/msword") return "doc_legacy";
     return "unknown";
 }
@@ -486,7 +486,7 @@ int main(int argc, char **argv) {
         startb = new Fl_Button(512-74, 10, 64, 32, "Start");
         startb->callback(start_cb);
 
-        progress_bar = new Fl_Progress(10, 240, 492, 24);
+        progress_bar = new Fl_Progress(10, 180, 492, 24);
         progress_bar->minimum(0);
         progress_bar->maximum(100);
         progress_bar->value(0);

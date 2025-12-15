@@ -11,3 +11,13 @@ This tool relies on several system packages to extract images from different doc
 *   **libreoffice**: For DOC/DOCX and EPUB conversion and extraction (`soffice`).
 *   **poppler-utils**: For PDF image extraction (`pdfimages`).
 *   **unzip**: For extracting images from ZIP-based formats like DOCX and EPUB.
+
+Debian, Ubuntu, Linux Mint and other Debian-based:
+```
+sudo apt-get update && sudo apt-get install -y djvulibre-bin libreoffice poppler-utils unzip
+```
+
+Fedora (and other RHEL-based distributions like CentOS, AlmaLinux, etc.):
+```
+sudo dnf install -y djvulibre libreoffice poppler-utils unzip
+```
